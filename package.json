@@ -1,8 +1,8 @@
 {
-  "name": "ui5.walkthrough.step08",
+  "name": "ui5.walkthrough.step09",
   "version": "1.0.0",
   "author": "SAP SE",
-  "description": "OpenUI5 TypeScript Walkthrough: Step 8: Translatable Texts",
+  "description": "OpenUI5 TypeScript Walkthrough: Step 9 - Component Configuration",
   "private": true,
   "scripts": {
     "start": "ui5 serve -o index.html"

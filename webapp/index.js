@@ -1,10 +1,13 @@
-sap.ui.define(["sap/ui/core/mvc/XMLView"], function (XMLView) {
+sap.ui.define(["sap/ui/core/ComponentContainer"], function (ComponentContainer) {
   "use strict";
 
-  XMLView.create({
-    viewName: "ui5.walkthrough.view.App",
-    id: "app"
-  }).then(function (view) {
-    view.placeAt("content");
-  });
+  new ComponentContainer({
+    id: "container",
+    name: "ui5.walkthrough",
+    settings: {
+      id: "walkthrough"
+    },
+    autoPrefixId: true,
+    async: true
+  }).placeAt("content");
 });
