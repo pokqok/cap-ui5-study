@@ -1,20 +1,19 @@
-## Step 4: XML Views
+## Step 5: Controllers
 
-Putting all our UI into the `index.ts` file will very soon result in a messy setup and there is quite a bit of work ahead of us. So let’s do a first modularization by putting the `sap/m/Text` control into a dedicated `view`.
-
-When working with OpenUI5, we recommend the use of XML views, as this produces the most readable code and will force us to separate the view declaration from the controller logic. Yet the look of our UI will not change.
+In this step, we replace the text with a button and show the “Hello World” message when the button is pressed. The handling of the button's `press` event is implemented in the controller of the view.
 
 &nbsp;
 
 ***
+
 ### Preview
 
 
-![](assets/loio05f6775a39d3409ea673f4acc3812142_LowRes.png "The &quot;Hello World&quot; text is now displayed by a OpenUI5 control  \(No visual changes to last step\)")
+![](assets/loiocedfdf89b30643ddbfcab1fe50bfa892_LowRes.png "A Say Hello button is added")
 
-<sup>*The &quot;Hello World&quot; text is now displayed by an OpenUI5 control \(No visual changes to last step\)*</sup>
+<sup>*A Say Hello button is added*</sup>
 
-You can access the live preview by clicking on this link: [🔗 Live Preview of Step 4](https://ui5.github.io/tutorials/walkthrough/build/04/index-cdn.html).
+You can access the live preview by clicking on this link: [🔗 Live Preview of Step 5](https://ui5.github.io/tutorials/walkthrough/build/05/index-cdn.html).
 
 ***
 
@@ -22,99 +21,102 @@ You can access the live preview by clicking on this link: [🔗 Live Preview of 
 
 <details class="ts-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 4](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-04.zip).
+You can download the solution for this step here: [📥 Download step 5](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-05.zip).
 
 </details>
 
 <details class="js-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 4](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-04-js.zip).
+You can download the solution for this step here: [📥 download step 5](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-05-js.zip).
 
 </details>
 ***
 
-### webapp/view/App.view.xml \(New\)
+### webapp/controller/App.controller.?s \(New\)
+First of all, we need a controller for our app view that defines how the view should react to user inputs, such as a button press event. 
 
-We create a new folder called `view` inside the `webapp` folder. This folder will hold all our XML view files. Inside the `view` folder, we create a new file called `App.view.xml`. In OpenUI5, the root node of an XML view is the `<mvc:View>` tag. To use this tag, we need to declare the XML namespace `mvc`, which corresponds to the `sap.ui.core.mvc` namespace. This namespace provides classes for creating and working with views and other Model-View-Controller \(MVC\) assets. Additionally, we declare the default XML namespace to the `sap.m` namespace. This namespace contains the majority of OpenUI5's UI assets, including the `Text` control that we want to use with our view.
+We create a new folder called `controller` inside the `webapp` folder. This folder will hold all our controller files. Inside the `controller` folder, we create a new file called `App.controller.?s`. We define the app controller in its own file by extending the OpenUI5-provided `sap/ui/core/mvc/Controller`. In the beginning, it holds only a single function called `onShowHello` that shows an alert with the static text "Hello World".
 
-Inside the `<mvc:View>` tag, we add the `<Text>` tag from the default XML namespace. This `<Text>` tag represents the text control that will be displayed on the view. We set the `text` attribute of the `<Text>` tag to "Hello World". This will display the text "Hello World" on the view.
-
-```xml
-<mvc:View
-   xmlns="sap.m"
-   xmlns:mvc="sap.ui.core.mvc">
-   <Text text="Hello World"/>
-</mvc:View>
-```
-
-We have created an XML view that displays a text control with the text "Hello World".
-
-> 💡 **Tip:** <br>
-> XML tags are mapped to UI controls, and attributes are mapped to the properties of the control. In this case, the `<Text>` tag represents the `Text` control in the sap.m library, and the `text` attribute sets the `text` property of the control.
-
-> 📝 **Note:**  <br>
-> The namespace identifies all resources of the project and has to be unique. If you develop your own application code or library, you cannot use the namespace prefix `sap`, because this namespace is reserved for SAP resources. Instead, simply define your own unique namespace \(for example, `myCompany.myApp`\).
-
-***
-
-### webapp/index.?s
-
-As a next step, we are going to replace the `sap/m/Text` control in our `index.?s` file with the app view that we've just created. To do this, we utilize the `XMLView.create` function, which is a part of the `sap/ui/core/mvc/View` module. This function needs a `viewName` property, which indicates the resource that needs to be loaded. The `viewName` is a combination of the namespace defined in the bootstrap and the path to the app view, but without the ".view.xml" extension. In addition, we set the `id` property to "app". Providing a stable ID is beneficial as it offers an easy and consistent way to identify and refer to specific views and elements in your code, thus helping to keep your code organized.
 
 ```ts
-import XMLView from "sap/ui/core/mvc/XMLView";
+import Controller from "sap/ui/core/mvc/Controller";
 
-XMLView.create({
-    viewName: "ui5.walkthrough.view.App",
-    id: "app"
-}).then(function (view) {
-    view.placeAt("content");
-});
+/**
+ * @name ui5.walkthrough.controller.App
+ */
+export default class AppController extends Controller {
+    onShowHello(): void {
+        // show a native JavaScript alert
+        alert("Hello World");
+     }
+};
 
 ```
 
 ```js
-sap.ui.define(["sap/ui/core/mvc/XMLView"], function (XMLView) {
+sap.ui.define(["sap/ui/core/mvc/Controller"], function (Controller) {
   "use strict";
 
-  XMLView.create({
-    viewName: "ui5.walkthrough.view.App",
-    id: "app"
-  }).then(function (view) {
-    view.placeAt("content");
+  const AppController = Controller.extend("ui5.walkthrough.controller.App", {
+    onShowHello() {
+      // show a native JavaScript alert
+      alert("Hello World");
+    }
   });
+  ;
+  return AppController;
 });
 
 ```
+<details class="ts-only" markdown="1">
 
-We have now embed our app view to the body of the HTML document.
+> 📝 **Note:** <br>
+> The comment `@name ui5.walkthrough.controller.App` is a JSDoc comment that names this controller. It can be used by documentation generators and IDEs to provide more information about this class.
 
-> 💡 **Tip:**  <br>
->Although setting an ID is not mandatory, it greatly improves the maintainability and flexibility of your code. With a stable ID, you can easily locate and update specific parts of your application.
+</details>
+***
+
+### webapp/view/App.view.xml
+
+To connect our controller with the view, we need to specify the name of our newly created controller in the `controllerName` attribute of the root node. This allows us to access the event handlers and other functionalities defined in the controller. The name should be a module path, which is the location of the controller file. 
+
+In addition, we replace the `<text>` tag with a `<button>` tag. We set the `text` attribute of the button to the static value "Say Hello" and assign the `onShowHello` event from our app controller to the `press` attribute of the button. To indicate that the press event handler is located in the controller of the view and not in the Global Namespace, we prefix the handler name with a dot (`.`) character.
+
+```xml
+<mvc:View
+   controllerName="ui5.walkthrough.controller.App"
+   xmlns="sap.m"
+   xmlns:mvc="sap.ui.core.mvc">
+   <Button
+      text="Say Hello"
+      press=".onShowHello"/>
+</mvc:View>
+
+```
+
+A view does not necessarily need an explicitly assigned controller. You do not have to create a controller if the view is just displaying information and no additional functionality is required. If a controller is specified, it is instantiated after the view is loaded.
 
 ***
 
 ### Conventions
 
--   View names are capitalized
+-   Controller names are capitalized
 
--   All views are stored in the `view` folder
+-   All controllers are stored in the `controller` folder
 
--   Names of XML views always end with `*.view.xml`
+-   Controllers carry the same name as the related view \(if there is a 1:1 relationship\)
 
--   XML namespaces are declared in the root element of the view
+-   Event handlers are prefixed with `on`
 
--   As a general rule, the default XML namespace is `sap.m`
-
--   Other XML namespaces use the last part of the SAP namespace as alias \(for example, `mvc` for `sap.ui.core.mvc`\)
+-   Controller names always end with `*.controller.?s`
 
 &nbsp;
 
 ***
 
-**Next:** [Step 5: Controllers](../05/README.md "In this step, we replace the text with a button and show the Hello World message when the button is pressed. The handling of the button's press event is implemented in the controller of the view.")
+**Next:** [Step 6: Modules](../06/README.md "In OpenUI5, resources are often referred to as modules. In this step, we replace the alert from the last exercise with a proper Message Toast from the `sap.m` library.")
 
-**Previous:** [Step 3: Controls](../03/README.md "Now it's time to build our first little UI by replacing the Hello World text in the HTML body by the OpenUI5 control sap.m.Text. In the beginning, we will use the TypeScript control AOI to set up the UI, the control instance is then placed into the HTML body.")
+**Previous:** [Step 4: XML Views](../04/README.md "Putting all our UI into the index.html file will very soon result in a messy setup and there is quite a bit of work ahead of us. So let’s do a first modularization by putting the sap/m/Text control into a dedicated view.")
 
 ***
 
@@ -122,11 +124,6 @@ We have now embed our app view to the body of the HTML document.
 
 [Model View Controller \(MVC\)](https://sdk.openui5.org/topic/91f233476f4d1014b6dd926db0e91070.html "The Model View Controller (MVC) concept is used in OpenUI5 to separate the representation of information from the user interaction. This separation facilitates development and the changing of parts independently.")
 
-[XML Namespaces - The xmlns Atribute](https://www.w3schools.com/XML/xml_namespaces.asp)
-[Views](https://sdk.openui5.org/topic/91f27e3e6f4d1014b6dd926db0e91070.html "The view in the Model-View-Controller (MVC) concept is responsible for defining and rendering the UI. OpenUI5 supports predefined view types.")
+[Controller](https://sdk.openui5.org/topic/121b8e6337d147af9819129e428f1f75.html "A controller contains methods that define how models and views interact.")
 
-[API Reference: sap.ui.core.mvc.View](https://sdk.openui5.org/api/sap.ui.core.mvc.View)
-
-[XML View](https://sdk.openui5.org/topic/91f292806f4d1014b6dd926db0e91070.html "The XML view type is defined in an XML file. The file name either ends with .view.xml or as an XML string. The file name and the folder structure together specify the name of the view that equals the OpenUI5 module name.")
-
-[API Reference: sap.ui.core.mvc.XMLView](https://sdk.openui5.org/api/sap.ui.core.mvc.xmlView)
+[API Reference: sap.ui.core.mvc.Controller](https://sdk.openui5.org/api/sap.ui.core.mvc.Controller)
