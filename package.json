@@ -1,8 +1,8 @@
 {
-  "name": "ui5.walkthrough.step05",
+  "name": "ui5.walkthrough.step06",
   "version": "1.0.0",
   "author": "SAP SE",
-  "description": "OpenUI5 TypeScript Walkthrough: Step 5: Controllers",
+  "description": "OpenUI5 TypeScript Walkthrough: Step 6: Modules",
   "private": true,
   "scripts": {
     "start": "ui5 serve -o index.html"

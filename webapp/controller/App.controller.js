@@ -1,10 +1,9 @@
-sap.ui.define(["sap/ui/core/mvc/Controller"], function (Controller) {
+sap.ui.define(["sap/m/MessageToast", "sap/ui/core/mvc/Controller"], function (MessageToast, Controller) {
   "use strict";
 
   const AppController = Controller.extend("ui5.walkthrough.controller.App", {
     onShowHello() {
-      // show a native JavaScript alert
-      alert("Hello World");
+      MessageToast.show("Hello World");
     }
   });
   return AppController;
