@@ -102,3 +102,16 @@
     * 기존처럼 화면(XML 뷰)을 직접 불러오지 않고, 대신 `ComponentContainer`라는 상자를 만들어 방금 만든 컴포넌트 전체를 화면에 얹어주는 역할만 하도록 수정했습니다.
   * `webapp/controller/App.controller.js` 수정:
     * 초기화 로직이 컴포넌트로 넘어갔으므로, 데이터를 세팅하던 `onInit` 함수가 통째로 삭제되었습니다. 오직 버튼 클릭 이벤트 로직만 남게 되어 컨트롤러 본연의 역할에 집중하게 되었습니다!
+
+---
+
+## Step 10: Descriptor for Applications (앱 설정 파일)
+* **핵심 내용**: 
+  * 하드코딩된 자바스크립트 코드에서 앱의 메타데이터(버전, 앱 이름, 사용할 모델, 루트 뷰 등)를 분리하여 `manifest.json` 이라는 하나의 설정 파일(Descriptor)로 통합했습니다.
+  * `webapp/manifest.json` 신규 생성:
+    * `sap.app`: 앱의 ID, 버전, 다국어 파일(i18n), 제목 등을 정의합니다.
+    * `sap.ui`: 앱이 실행될 디바이스 환경(데스크톱, 모바일 등)을 정의합니다.
+    * `sap.ui5`: 진입점이 되는 첫 화면(Root View)과 앱 전체에서 사용할 데이터/언어 모델(Models)을 정의합니다.
+  * `webapp/Component.js` 수정:
+    * 기존에 직접 코딩했던 `JSONModel`과 `ResourceModel` 생성 코드를 싹 지웠습니다.
+    * 대신 `metadata` 속성에 `manifest: "json"` 한 줄만 추가했습니다. 이렇게 하면 UI5 프레임워크가 알아서 `manifest.json` 파일을 읽고, 거기에 적힌 대로 모델과 화면을 자동으로 세팅해 줍니다!
