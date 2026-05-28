@@ -115,3 +115,16 @@
   * `webapp/Component.js` 수정:
     * 기존에 직접 코딩했던 `JSONModel`과 `ResourceModel` 생성 코드를 싹 지웠습니다.
     * 대신 `metadata` 속성에 `manifest: "json"` 한 줄만 추가했습니다. 이렇게 하면 UI5 프레임워크가 알아서 `manifest.json` 파일을 읽고, 거기에 적힌 대로 모델과 화면을 자동으로 세팅해 줍니다!
+
+---
+
+## Step 11: Pages and Panels (페이지와 패널 레이아웃)
+* **핵심 내용**: 
+  * 허허벌판이던 흰 화면 대신, 화면의 레이아웃을 모바일 앱처럼 깔끔하게 잡아주는 기본 틀(`Page`, `Panel`)을 적용했습니다.
+  * `webapp/view/App.view.xml` 수정:
+    * 기존의 버튼과 입력창을 바로 나열하지 않고, `<App>` ➡️ `<Page>` ➡️ `<Panel>` 이라는 3겹의 레이아웃 컨트롤로 감쌌습니다.
+    * `<App>`: 앱 전체를 감싸는 최상위 컨테이너로, 향후 화면 전환(네비게이션) 같은 모바일 기능을 지원합니다.
+    * `<Page>`: 화면 상단에 파란색 헤더 바(제목 표시줄)를 만들어주고 전체 여백을 예쁘게 잡아줍니다.
+    * `<Panel>`: 버튼과 입력창 주변에 테두리와 제목을 만들어 구역을 깔끔하게 나눠줍니다.
+  * `webapp/i18n/i18n.properties` 수정:
+    * 페이지 제목용(`homePageTitle=Walkthrough`)과 패널 제목용(`helloPanelTitle=Hello World`) 텍스트를 추가하고 XML 뷰에서 바인딩했습니다.
