@@ -76,3 +76,16 @@
   * `webapp/view/App.view.xml` 수정:
     * `<Input value="{/recipient/name}" />` 텍스트 입력창 컨트롤을 추가했습니다.
     * 여기서 중괄호 `{}` 문법이 바로 **데이터 바인딩(Data Binding)** 입니다. 모델이 가진 `name` 변수의 값("World")을 화면의 입력창 값으로 실시간 연결해 줍니다.
+
+---
+
+## Step 8: Translatable Texts (다국어 텍스트 분리)
+* **핵심 내용**: 
+  * 화면에 보이는 글씨("Say Hello", "Hello World")를 코드 안에 하드코딩(직접 입력)하지 않고, 별도의 텍스트 전용 파일(Properties)로 분리했습니다. 이렇게 하면 나중에 한국어, 영어 등 다국어(i18n) 번역을 쉽게 지원할 수 있습니다.
+  * `webapp/i18n/i18n.properties` 파일 생성:
+    * `showHelloButtonText=Say Hello`, `helloMsg=Hello {0}` 처럼 `변수명=텍스트` 형태로 앱에서 사용할 모든 글귀를 모아둡니다. (`{0}`은 나중에 이름이 들어갈 빈칸입니다.)
+  * `webapp/controller/App.controller.js` 수정: 
+    * `ResourceModel` 모듈을 가져와서 방금 만든 `i18n.properties` 파일을 읽어들이는 텍스트 전용 모델(`i18nModel`)을 만들고 화면에 세팅했습니다.
+    * 버튼을 누를 때 텍스트를 직접 치지 않고, `resourceBundle.getText("helloMsg", [recipient])`를 호출하여 텍스트 파일에서 글귀를 동적으로 꺼내오도록 변경했습니다.
+  * `webapp/view/App.view.xml` 수정:
+    * `<Button text="Say Hello" />` 대신 `<Button text="{i18n>showHelloButtonText}" />`로 변경했습니다. 여기서 `i18n>`은 "i18n이라는 이름의 모델에서 해당 텍스트를 가져와라"라는 뜻입니다.
