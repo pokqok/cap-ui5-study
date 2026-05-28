@@ -63,3 +63,16 @@
   * `webapp/controller/App.controller.js` 수정: 상단의 `sap.ui.define` 배열 안에 `"sap/m/MessageToast"` 모듈을 추가로 선언하고, 콜백 함수 파라미터로 `MessageToast`를 받아옵니다.
   * 기존 `alert("Hello World");` 코드를 지우고 `MessageToast.show("Hello World");`로 변경.
   * 결과적으로 버튼을 누르면 브라우저의 투박한 경고창 대신, 화면 하단에 부드럽게 나타났다가 사라지는 토스트(Toast) 팝업이 뜹니다.
+
+---
+
+## Step 7: JSON Model (데이터 관리)
+* **핵심 내용**: 
+  * 드디어 MVC 패턴의 마지막 퍼즐인 **Model(데이터 관리)** 을 도입했습니다. 앱에서 사용할 데이터(변수)를 보관하고 화면(View)과 연결하는 역할을 합니다.
+  * `webapp/controller/App.controller.js` 수정: 
+    * `onInit()` 이라는 함수를 추가했습니다. 이 함수는 앱이 처음 켜질 때 딱 한 번 자동으로 실행되는 초기화 함수입니다.
+    * `JSONModel` 모듈을 불러온 뒤, `new JSONModel({ recipient: { name: "World" } })` 형식으로 데이터를 담은 모델 객체를 만들었습니다.
+    * `this.getView().setModel(dataModel);` 코드를 통해 생성한 모델을 화면(View)에 장착했습니다.
+  * `webapp/view/App.view.xml` 수정:
+    * `<Input value="{/recipient/name}" />` 텍스트 입력창 컨트롤을 추가했습니다.
+    * 여기서 중괄호 `{}` 문법이 바로 **데이터 바인딩(Data Binding)** 입니다. 모델이 가진 `name` 변수의 값("World")을 화면의 입력창 값으로 실시간 연결해 줍니다.
