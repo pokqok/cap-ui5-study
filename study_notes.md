@@ -89,3 +89,16 @@
     * 버튼을 누를 때 텍스트를 직접 치지 않고, `resourceBundle.getText("helloMsg", [recipient])`를 호출하여 텍스트 파일에서 글귀를 동적으로 꺼내오도록 변경했습니다.
   * `webapp/view/App.view.xml` 수정:
     * `<Button text="Say Hello" />` 대신 `<Button text="{i18n>showHelloButtonText}" />`로 변경했습니다. 여기서 `i18n>`은 "i18n이라는 이름의 모델에서 해당 텍스트를 가져와라"라는 뜻입니다.
+
+---
+
+## Step 9: Component Configuration (컴포넌트 구성)
+* **핵심 내용**: 
+  * 지금까지는 `index.js`와 `App.controller.js`가 앱의 초기화와 모델(데이터/언어) 세팅을 직접 담당했습니다. 하지만 실제 앱은 여러 화면을 가질 수 있으므로, 앱 전체를 관리하는 독립적인 대장 부품(Component)으로 캡슐화(포장)하는 것이 표준입니다.
+  * `webapp/Component.js` 파일 신규 생성:
+    * 앱 전체를 관리하는 핵심 컴포넌트 파일입니다.
+    * `init()` 함수 안에서 앱 전체가 쓸 데이터 모델(`JSONModel`)과 언어 모델(`ResourceModel`)을 세팅합니다. (기존 컨트롤러에 있던 초기화 코드를 이쪽으로 이사 왔습니다.)
+  * `webapp/index.js` 수정: 
+    * 기존처럼 화면(XML 뷰)을 직접 불러오지 않고, 대신 `ComponentContainer`라는 상자를 만들어 방금 만든 컴포넌트 전체를 화면에 얹어주는 역할만 하도록 수정했습니다.
+  * `webapp/controller/App.controller.js` 수정:
+    * 초기화 로직이 컴포넌트로 넘어갔으므로, 데이터를 세팅하던 `onInit` 함수가 통째로 삭제되었습니다. 오직 버튼 클릭 이벤트 로직만 남게 되어 컨트롤러 본연의 역할에 집중하게 되었습니다!
