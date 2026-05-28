@@ -46,3 +46,11 @@
   * 자바스크립트(`index.js`) 안에 UI 요소를 직접 작성하면 화면이 복잡해질수록 관리가 어려워집니다. 따라서 화면(View) 구성만 담당하는 전용 파일(`XML`)을 만들어 완벽히 분리했습니다.
   * `webapp/view/App.view.xml` 생성: 화면을 구성할 UI5 컨트롤을 HTML과 유사한 XML 태그 형식(`<Text text="Hello World"/>`)으로 선언.
   * `index.js` 수정: 텍스트를 직접 생성하는 대신, 방금 만든 XML 뷰 파일(`ui5.walkthrough.view.App`) 전체를 불러온 뒤 도화지(`id="content"`) 영역에 부착하도록 역할을 변경.
+
+---
+
+## Step 5: Controllers (이벤트 로직 분리)
+* **핵심 내용**: 
+  * 화면(View)에서 발생하는 클릭 등의 동작(이벤트)을 처리하는 로직만 따로 모아두는 **Controller(컨트롤러)** 파일을 분리했습니다. MVC 패턴의 **C**에 해당합니다.
+  * `webapp/controller/App.controller.js` 생성: `onShowHello`라는 함수를 정의하고, 실행 시 "Hello World" 경고창을 띄우는 로직 작성.
+  * `webapp/view/App.view.xml` 수정: `<mvc:View>` 태그에 `controllerName="ui5.walkthrough.controller.App"`을 선언하여 방금 만든 컨트롤러와 화면을 연결함. 단순 텍스트 대신 `<Button text="Say Hello" press=".onShowHello"/>` 버튼을 배치하여 버튼 클릭 시 컨트롤러의 `onShowHello` 함수가 실행되도록 연결함.
