@@ -1,0 +1,40 @@
+# UI5 Walkthrough 학습 노트
+
+이 파일은 튜토리얼을 진행하며 학습한 핵심 내용과 발생했던 이슈/질문들을 기록하는 문서입니다.
+
+---
+
+## Step 1: Hello World
+* **핵심 내용**: 
+  * UI5 프로젝트의 가장 기본적인 뼈대(`webapp` 폴더 및 `index.html`)를 구성했습니다.
+  * 아직 UI5 엔진을 쓰지 않고 순수한 HTML 텍스트 태그(`<div>`)로만 화면을 출력했습니다.
+* **Q&A 및 이슈**:
+  * **Q: BAS(Business Application Studio) 환경에서 어떻게 테스트할까?**
+    * A: 로컬 환경과 BAS를 연결하기 위해 GitHub에 프라이빗 저장소(`cap-ui5-study`)를 생성하고, `git push`를 통해 코드를 연동하는 방식으로 해결했습니다. (Node.js를 무시하는 폴더 처리를 위해 `.gitignore` 파일도 세팅)
+
+---
+
+## Step 2: Bootstrap (UI5 엔진 장착)
+* **핵심 내용**: 
+  * 평범한 HTML 문서에 SAPUI5 프레임워크를 연결하고 초기화(Bootstrap)했습니다.
+  * `index.html`의 `<head>` 태그 내에 부트스트랩 스크립트 추가:
+    * `sap-ui-core.js` 엔진 로드
+    * `data-sap-ui-async="true"`: 비동기 로딩을 통한 성능 최적화
+    * `data-sap-ui-on-init`: 엔진 로딩 완료 직후 `index.js` 파일을 실행하도록 지시
+  * `index.js`: 엔진 구동 완료를 확인하기 위해 `alert("UI5 is ready");` 경고창 띄우기 수행.
+* **Q&A 및 이슈**:
+  * **Q: 테스트 실행 명령어는 무엇인가?**
+    * A: 표준 웹 개발 환경과 동일하게 `npm install` (최초 1회) 후 `npm start` 를 입력하여 로컬 개발 서버를 띄웁니다.
+  * **Q: 예전 SAP(ABAP, GUI 등) 개발 방식과 다른 것 같은데?**
+    * A: 최신 SAPUI5 및 BAS 환경은 React, Vue 등과 같은 현대적인 웹 개발 표준(Node.js 생태계)을 따르도록 발전했습니다.
+
+---
+
+## Step 3: Controls (UI5 컨트롤 사용)
+* **핵심 내용**: 
+  * 순수 HTML 태그 대신 본격적으로 SAPUI5가 제공하는 컴포넌트(Control)로 화면을 그리기 시작했습니다.
+  * `index.html`: `class="sapUiBody"`를 추가하여 SAP 테마를 화면 전체에 적용하고, 그림을 그릴 도화지 영역인 `id="content"` 지정.
+  * `index.js`: `sap.ui.define`을 사용하여 UI5 텍스트 부품(`sap/m/Text`)을 가져옴. 이를 조립(`new Text(...)`)한 뒤 도화지 영역에 부착(`.placeAt("content")`).
+* **Q&A 및 이슈**:
+  * **Q: 테스트 화면을 띄웠는데 앱이 안나오고 파일/폴더 구조가 뜬다.**
+    * A: 프로젝트 최상단 폴더 위치에서 단순 파일 서버가 열렸을 때 발생하는 현상입니다. 화면 목록에서 `webapp` 폴더를 클릭한 뒤 `index.html`을 클릭해 들어가거나, 터미널에서 `npm start` 명령어로 정확히 실행하여 해결합니다.
