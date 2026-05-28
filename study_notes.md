@@ -54,3 +54,12 @@
   * 화면(View)에서 발생하는 클릭 등의 동작(이벤트)을 처리하는 로직만 따로 모아두는 **Controller(컨트롤러)** 파일을 분리했습니다. MVC 패턴의 **C**에 해당합니다.
   * `webapp/controller/App.controller.js` 생성: `onShowHello`라는 함수를 정의하고, 실행 시 "Hello World" 경고창을 띄우는 로직 작성.
   * `webapp/view/App.view.xml` 수정: `<mvc:View>` 태그에 `controllerName="ui5.walkthrough.controller.App"`을 선언하여 방금 만든 컨트롤러와 화면을 연결함. 단순 텍스트 대신 `<Button text="Say Hello" press=".onShowHello"/>` 버튼을 배치하여 버튼 클릭 시 컨트롤러의 `onShowHello` 함수가 실행되도록 연결함.
+
+---
+
+## Step 6: Modules (UI5 모듈 활용)
+* **핵심 내용**: 
+  * 자바스크립트 내장 경고창(`alert`) 대신, SAPUI5에서 제공하는 세련된 메시지 팝업 모듈(`sap/m/MessageToast`)을 사용하도록 코드를 개선했습니다.
+  * `webapp/controller/App.controller.js` 수정: 상단의 `sap.ui.define` 배열 안에 `"sap/m/MessageToast"` 모듈을 추가로 선언하고, 콜백 함수 파라미터로 `MessageToast`를 받아옵니다.
+  * 기존 `alert("Hello World");` 코드를 지우고 `MessageToast.show("Hello World");`로 변경.
+  * 결과적으로 버튼을 누르면 브라우저의 투박한 경고창 대신, 화면 하단에 부드럽게 나타났다가 사라지는 토스트(Toast) 팝업이 뜹니다.
