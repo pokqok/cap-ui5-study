@@ -1,8 +1,8 @@
 {
-  "name": "ui5.walkthrough.step07",
+  "name": "ui5.walkthrough.step08",
   "version": "1.0.0",
   "author": "SAP SE",
-  "description": "OpenUI5 TypeScript Walkthrough: Step 7: JSON Model",
+  "description": "OpenUI5 TypeScript Walkthrough: Step 8: Translatable Texts",
   "private": true,
   "scripts": {
     "start": "ui5 serve -o index.html"
