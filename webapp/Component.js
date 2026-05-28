@@ -16,8 +16,8 @@ sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/model/json/JSONModel"], functi
           name: "World"
         }
       };
-      const dataModel = new JSONModel(data);
-      this.setModel(dataModel);
+      const model = new JSONModel(data);
+      this.setModel(model);
     }
   });
   return Component;
