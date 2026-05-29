@@ -285,3 +285,13 @@
     * `onFilterInvoices` 함수를 정의하여 사용자가 검색창에 입력한 단어(`query`)를 가져오게 했습니다.
     * `new Filter("ProductName", FilterOperator.Contains, query)` 코드를 통해 **"상품명(ProductName)에 내가 입력한 단어가 포함(Contains)되어 있는지 찾아라!"** 라는 검색 조건을 만들었습니다.
     * 마지막으로 `this.byId("invoiceList").getBinding("items").filter(aFilter)` 를 호출하여, 만들어진 검색 조건을 리스트에 "적용해!" 라고 명령을 내렸습니다.
+
+---
+
+## Step 24: Sorting and Grouping (데이터 정렬과 그룹화)
+* **핵심 내용**: 
+  * 리스트에 나타나는 수많은 데이터를 특정 기준(예: 회사명)에 따라 순서대로 정렬(Sorting)하고, 같은 회사끼리 묶어서 소제목(그룹 헤더)을 달아주는 그룹화(Grouping) 기법을 배웠습니다.
+  * `webapp/view/InvoiceList.view.xml` 수정:
+    * 리스트(`<List>`)의 `items` 바인딩 속성을 단순한 문자열(`"{invoice>/Invoices}"`)에서 복잡한 객체 형태(`{ path: '...', sorter: { ... } }`)로 변경했습니다.
+    * 핵심은 `sorter: { path: 'ShipperName', group: true }` 코드입니다.
+    * 자바스크립트로 복잡하게 코딩할 필요 없이, 화면(XML) 쪽에 이 단 몇 줄만 추가하면 UI5 엔진이 알아서 **1) 데이터를 'ShipperName(배송업체명)' 알파벳 순서대로 정렬**하고, **2) 업체명이 바뀔 때마다 리스트 중간중간에 "Exotic Liquids", "Tokyo Traders" 같은 시각적인 그룹 구분선(헤더)을 자동으로 싹 만들어줍니다.**
