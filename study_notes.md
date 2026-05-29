@@ -295,3 +295,15 @@
     * 리스트(`<List>`)의 `items` 바인딩 속성을 단순한 문자열(`"{invoice>/Invoices}"`)에서 복잡한 객체 형태(`{ path: '...', sorter: { ... } }`)로 변경했습니다.
     * 핵심은 `sorter: { path: 'ShipperName', group: true }` 코드입니다.
     * 자바스크립트로 복잡하게 코딩할 필요 없이, 화면(XML) 쪽에 이 단 몇 줄만 추가하면 UI5 엔진이 알아서 **1) 데이터를 'ShipperName(배송업체명)' 알파벳 순서대로 정렬**하고, **2) 업체명이 바뀔 때마다 리스트 중간중간에 "Exotic Liquids", "Tokyo Traders" 같은 시각적인 그룹 구분선(헤더)을 자동으로 싹 만들어줍니다.**
+
+---
+
+## Step 25: Remote OData Service (진짜 백엔드 OData 연동)
+* **핵심 내용**: 
+  * 드디어! 지금까지 연습용으로 썼던 가짜 로컬 데이터(`localInvoices.json`)를 지우고, 인터넷에 있는 실제 백엔드 서버(Northwind OData 서비스)의 DB 데이터를 실시간으로 끌어오도록 연결했습니다.
+  * `webapp/manifest.json` 수정:
+    * 데이터 소스(`dataSources`) 항목에 `invoiceRemote`라는 이름으로 외부 백엔드 주소(`V2/Northwind/Northwind.svc/`)와 통신 방식(`OData`)을 등록했습니다.
+    * 그리고 기존에 사용하던 `invoice` 모델이 더 이상 로컬 JSON 파일이 아니라, 방금 등록한 원격 서버(`invoiceRemote`)를 바라보도록 설정을 통째로 바꿨습니다.
+  * `ui5.yaml` 및 `package.json` 수정 (CORS 에러 해결):
+    * 내 컴퓨터(로컬)에서 외부 인터넷 서버(Northwind)로 직접 데이터를 요청하면 브라우저 보안 정책 때문에 **CORS 에러**가 나면서 통신이 막힙니다.
+    * 이를 우회하기 위해 `ui5-middleware-simpleproxy`라는 프록시(중계기) 모듈을 설치했습니다. 내 개발 서버가 대리인 역할을 해서 외부 데이터를 안전하게 퍼오도록 `ui5.yaml` 환경설정을 수정했습니다.
