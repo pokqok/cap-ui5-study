@@ -256,3 +256,17 @@
     * `numberState="{= ${invoice>ExtendedPrice} > 50 ? 'Error' : 'Success' }"`
     * 위 코드는 **"만약 가격(`ExtendedPrice`)이 50을 초과하면 'Error'(빨간색)로 칠하고, 50 이하면 'Success'(초록색)로 칠해라!"** 라는 조건문(삼항 연산자)입니다.
     * `{= ... }` 기호와 `${데이터}` 기호를 조합하면 화면 파일 안에서도 자바스크립트처럼 즉석에서 수학 계산이나 논리 비교를 할 수 있어서 코드가 아주 간결해집니다!
+
+---
+
+## Step 22: Custom Formatters (커스텀 포맷터)
+* **핵심 내용**: 
+  * 내장된 통화 포맷팅이나 한 줄짜리 조건문으로 처리하기엔 너무 복잡한 로직이 필요할 때, 나만의 데이터 가공 함수(Custom Formatter)를 직접 만들어서 적용하는 방법을 배웠습니다.
+  * `webapp/model/formatter.js` 파일 신규 생성:
+    * 데이터를 가공하는 함수들만 따로 모아둘 자바스크립트 파일(모듈)을 독립적으로 만들었습니다.
+    * `statusText` 라는 함수를 정의하여, 데이터의 상태 코드(`"A"`, `"B"`, `"C"`)를 입력받아 switch 문을 통해 적절한 텍스트("New", "In Progress", "Done")로 변환하도록 구현했습니다.
+  * `webapp/view/InvoiceList.view.xml` 수정:
+    * 목록 아이템 안에 상태 텍스트를 보여줄 `<ObjectStatus>` 태그를 추가했습니다.
+    * `core:require="{ Formatter: 'ui5/walkthrough/model/formatter' }"` 속성을 써서 방금 만든 커스텀 포맷터 파일을 불러왔습니다.
+    * `formatter: 'Formatter.statusText.bind($controller)'` 코드를 통해 데이터 상태 코드(A,B,C)를 우리가 만든 포맷터 함수에 던져주고, 변환된 결과값을 화면에 출력하도록 연결했습니다.
+    * **중요**: `.bind($controller)`를 붙여주면, 포맷터 함수 안에서 `this`가 현재 화면의 컨트롤러를 가리키게 되어 다국어 파일(`i18n`) 데이터 등을 쉽게 꺼내 쓸 수 있습니다!
