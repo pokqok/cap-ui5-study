@@ -1,6 +1,6 @@
-## Step 22: Custom Formatters
+## Step 23: Filtering
 
-If we want to do a more complex logic for formatting properties of our data model, we can also write a custom formatting function. We will now add a localized status with a custom formatter, because the status in our data model is in a rather technical format.
+In this step, we add a search field for our product list and define a filter that represents the search term. When searching, the list is automatically updated to show only the items that match the search term.
 
 &nbsp;
 
@@ -8,11 +8,11 @@ If we want to do a more complex logic for formatting properties of our data mode
 
 ### Preview
   
-![](assets/loio7aa185a90dd7495cb6ec30c96bc80a54_LowRes.png "A status is now displayed with a custom formatter")
+![](assets/loio472ab6bf88674c23ba103efd97163133_LowRes.png "A search field is displayed above the list")
 
-<sup>*A status is now displayed with a custom formatter*</sup>
+<sup>*A search field is displayed above the list*</sup>
 
-You can access the live preview by clicking on this link: [🔗 Live Preview of Step 22](https://ui5.github.io/tutorials/walkthrough/build/22/index-cdn.html).
+You can access the live preview by clicking on this link: [🔗 Live Preview of Step 23](https://ui5.github.io/tutorials/walkthrough/build/23/index-cdn.html).
 
 ***
 
@@ -20,102 +20,114 @@ You can access the live preview by clicking on this link: [🔗 Live Preview of 
 
 <details class="ts-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 22](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-22.zip).
+You can download the solution for this step here: [📥 Download step 23](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-23.zip).
 
 </details>
 
 <details class="js-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 22](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-22-js.zip).
+You can download the solution for this step here: [📥 Download step 23](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-23-js.zip).
 
 </details>
 ***
 
-### webapp/i18n/i18n.properties
+### webapp/controller/InvoiceList.controller.?s
 
-We will add three new entries to the resource bundle that reflect translated status texts 'New', 'In Progess', and 'Done'. We will use these texts to format the status values 'A', 'B', and 'C' of our invoices when displayed in the invoice list view.
+We will implement a new `onFilterInvoices` event handler function to our controller. This function will enable users to filter the invoice list based on a search term entered in a `sap/m/SearchField` control.
 
+In the in the event handler, we create a filter object for the search term with filter operator `Contains` that targets the `ProductName` property of the invoice data.
 
-### webapp/i18n/i18n.properties
+If the query is empty, we filter the binding with an empty array. This will make sure that we see all list elements again.
 
-```ini
-...
-# Invoice List
-invoiceListTitle=Invoices
-invoiceStatusA=New
-invoiceStatusB=In Progress
-invoiceStatusC=Done
-```
-
-### webapp/model/formatter.?s \(New\)
-
-We will create a formatter function to transform status codes into user-friendly text labels. 
-
-We create a file named `formatter.?s` within the `model` folder. This module contains the `statusText` function which takes a status code as input, retrieves the corresponding descriptive text from the resource bundle, and returns it. If no matching text is found in the resource bundle, or if the resource bundle can't be found, the function returns the original status code itself.
+Finally we apply the filter to the items binding of the invoice list in our view, updating the displayed items.
 
 ```ts
-import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Controller from "sap/ui/core/mvc/Controller";
-import ResourceModel from "sap/ui/model/resource/ResourceModel";
+import JSONModel from "sap/ui/model/json/JSONModel";
+import { SearchField$SearchEvent } from "sap/m/SearchField";
+import Filter from "sap/ui/model/Filter";
+import FilterOperator from "sap/ui/model/FilterOperator";
+import ListBinding from "sap/ui/model/ListBinding";
 
-export default  {
-    statusText: function (this: Controller, status: string): string | undefined {
-        const resourceBundle = (this?.getOwnerComponent()?.getModel("i18n") as ResourceModel)?.getResourceBundle() as ResourceBundle;
-        switch (status) {
-            case "A":
-                return resourceBundle.getText("invoiceStatusA");
-            case "B":
-                return resourceBundle.getText("invoiceStatusB");
-            case "C":
-                return resourceBundle.getText("invoiceStatusC");
-            default:
-                return status;
+/**
+ * @namespace ui5.walkthrough.controller
+ */
+export default class App extends Controller {
+    onInit(): void {
+        const viewModel = new JSONModel({
+            currency: "EUR"
+        });
+        this.getView()?.setModel(viewModel, "view");
+    }
+
+    onFilterInvoices(event: SearchField$SearchEvent): void {
+        // build filter array
+        const filter = [];
+        const query = event.getParameter("query");
+        if (query) {
+            filter.push(new Filter("ProductName", FilterOperator.Contains, query));
         }
+
+        // filter binding
+        const list = this.byId("invoiceList");
+        const binding = list?.getBinding("items") as ListBinding;
+        binding?.filter(filter);
     }
 };
 
 ```
 
 ```js
-sap.ui.define([], function () {
+sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/model/json/JSONModel", "sap/ui/model/Filter", "sap/ui/model/FilterOperator"], function (Controller, JSONModel, Filter, FilterOperator) {
   "use strict";
 
-  return {
-    statusText: function (status) {
-      const resourceBundle = this?.getOwnerComponent()?.getModel("i18n")?.getResourceBundle();
-      switch (status) {
-        case "A":
-          return resourceBundle.getText("invoiceStatusA");
-        case "B":
-          return resourceBundle.getText("invoiceStatusB");
-        case "C":
-          return resourceBundle.getText("invoiceStatusC");
-        default:
-          return status;
+  const App = Controller.extend("ui5.walkthrough.controller.App", {
+    onInit() {
+      const viewModel = new JSONModel({
+        currency: "EUR"
+      });
+      this.getView()?.setModel(viewModel, "view");
+    },
+    onFilterInvoices(event) {
+      // build filter array
+      const filter = [];
+      const query = event.getParameter("query");
+      if (query) {
+        filter.push(new Filter("ProductName", FilterOperator.Contains, query));
       }
+
+      // filter binding
+      const list = this.byId("invoiceList");
+      const binding = list?.getBinding("items");
+      binding?.filter(filter);
     }
-  };
+  });
+  ;
+  return App;
 });
 
 ```
 &nbsp;
-This time we do not extend from any base object but just return an object with our `formatter` functions inside.
+The `onFilterInvoices` function is triggered by a `SearchField$SearchEvent`(an event generated by the search field when the user enters a search term and presses Enter or clicks the search icon). Event handlers always receive an event argument. This argument provides access to the event's specific parameters.
 
-The new `formatter` file is placed in the model folder of the app, because formatters are working on data properties and format them for display on the UI. 
+We use `event.getParameter("query")` to extract the text entered by the user in the search field. The `"query"` parameter is a standard property of the `SearchField$SearchEvent`.
 
-&nbsp;
+If the query is not empty, we create a new `sap/ui/model/Filter` object. This filter object is configured as follows:
+- `"ProductName"` (path): Specifies the data property to filter on. In this case, we're filtering the ProductName property of each invoice item.
+- `FilterOperator.Contains` (operator): Specifies the filtering logic. FilterOperator.Contains checks if the ProductName contains the query string. Other operators are available (e.g., FilterOperator.Equals, FilterOperator.StartsWith). The FilterOperator is part of the sap/ui/model/FilterOperator module. The `FilterOperator.Contains` operator performs a case-insensitive search.
+- `query` (value): The value to filter with – the search term entered by the user.
 
->📌 **Important:** <br>
-> In the above example, `this` refers to the controller instance as soon as the formatter gets called. We access the resource bundle via the component using `this.getOwnerComponent().getModel()` instead of using `this.getView().getModel()`. The latter call might return `undefined`, because the view might not have been attached to the component yet, and thus the view can't inherit a model from the component.
+The `byId` method is a helper function provided by the `sap/ui/core/mvc/Controller` class. It allows you to retrieve a control instance by its ID. Because the control ID is automatically prefixed with the view ID at runtime, we need to use `byId` to get a reference to the list control that's defined in the view.
 
-**Additional Information:**
+`list?.getBinding("items")` gets the binding object for the items aggregation of the `sap/m/List`. The items aggregation is the one bound to the list items.
 
--   [API Reference: `sap.ui.core.mvc.Controller#getOwnerComponent`](https://sdk.openui5.org/#/api/sap.ui.core.mvc.Controller/methods/getOwnerComponent). 
--   [API Reference: `sap.ui.core.mvc.Controller#onInit`](https://sdk.openui5.org/#/api/sap.ui.core.mvc.Controller/methods/onInit). 
+`binding?.filter(filter)` applies the filter (which is an array, even if it only contains one filter) to the list binding. This triggers the list to update its display, showing only the items that match the filter criteria. If the filter array is empty (because the query was empty), the `binding?.filter(filter)` call will effectively clear any existing filters, displaying all the items in the list again.
 
 ### webapp/view/InvoiceList.view.xml
 
-We add the `ObjectStatus` control to our `ObjectListItem` using the `firstStatus` aggregation. We bind the control not only to the technical status but also to the `statusText` function in our formatter to displaly the human-readable texts per invoice we specified in our resource bundle.
+First we specify the ID "invoiceList" to the list control, so the event handler function `onFilterInvoices` we added to the controller of the invoice list view can identify the list when triggered.
+
+In addition, we remove the `headerText` property in the list control and use `headerToolbar` aggregation with the `sap.m.Toolbar` assigned to it instead. A toolbar control is way more flexible and can be adjusted as you like. To the toolbar control we add a `sap.m.Title` displaying the title in the text attribute, a spacer, and the `sap.m.SearchField` with the width property set to 50% and the filter event handler function we defined in the controller assigned to the search event.
 
 ```xml
 <mvc:View
@@ -124,63 +136,40 @@ We add the `ObjectStatus` control to our `ObjectListItem` using the `firstStatus
    xmlns:core="sap.ui.core"
    xmlns:mvc="sap.ui.core.mvc">
    <List
-      headerText="{i18n>invoiceListTitle}"
+      id="invoiceList"
       class="sapUiResponsiveMargin"
       width="auto"
       items="{invoice>/Invoices}" >
+      <headerToolbar>
+         <Toolbar>
+            <Title text="{i18n>invoiceListTitle}"/>
+            <ToolbarSpacer/>
+            <SearchField width="50%" search=".onFilterInvoices"/>
+         </Toolbar>
+      </headerToolbar>
       <items>
-         <ObjectListItem
-            core:require="{
-               Currency: 'sap/ui/model/type/Currency'
-            }"
-            title="{invoice>Quantity} x {invoice>ProductName}"
-            number="{
-               parts: [
-                  'invoice>ExtendedPrice', 
-                  'view>/currency'
-               ],
-               type: 'Currency',
-               formatOptions: {
-                  showMeasure: false
-               }
-            }"
-            numberUnit="{view>/currency}"
-            numberState="{= ${invoice>ExtendedPrice} > 50 ? 'Error' : 'Success' }">
-            <firstStatus>
-               <ObjectStatus
-                  core:require="{
-                     Formatter: 'ui5/walkthrough/model/formatter'
-                  }"
-                  text="{
-                     path: 'invoice>Status',
-                     formatter: 'Formatter.statusText.bind($controller)'
-                  }"
-               />
-            </firstStatus>
-         </ObjectListItem>
+         ...
       </items>
    </List>
 </mvc:View>
 ```
 &nbsp;
-We used the `require` attribute with the namespace URI `sap.ui.core`, for which the prefix `core` is already defined in our XML view. This allows us to write the attribute as `core:require`. We then added our custom formatter module to the list of required modules and assigned it the alias `Formatter`, making it available for use within the view.
+The search field is part of the list header and therefore, each change on the list binding will trigger a rerendering of the whole list, including the search field.
 
-in the `ObjectStatus` control we defined our alias `Formatter` that holds our formatter functions, so we can access our function by `Formatter.statusText`. When called, we want the `this` context to be set to the controller instance of the current view. To achieve this, we used `.bind($controller)`.
-
-&nbsp; 
+&nbsp;
  
 ***
 
-**Next:** [Step 23: Filtering](../23/README.md "In this step, we add a search field for our product list and define a filter that represents the search term. When searching, the list is automatically updated to show only the items that match the search term.")
+**Next:**[Step 24: Sorting and Grouping](../24/README.md "To make our list of invoices even more user-friendly, we sort it alphabetically instead of just showing the order from the data model. Additionally, we introduce groups and add the company that ships the products so that the data is easier to consume.")
 
-**Previous:** [Step 21: Expression Binding](../21/README.md "Sometimes the predefined types of OpenUI5 are not flexible enough and you want to do a simple calculation or formatting in the view - that is where expressions are really helpful. We use them to format our price according to the current number in the data model..")
+**Previous:**[Step 22: Custom Formatters](../22/README.md "If we want to do a more complex logic for formatting properties of our data model, we can also write a custom formatting function. We will now add a localized status with a custom formatter, because the status in our data model is in a rather technical format.")
 
 ***
 
-**Related Information** 
+**Related Information**  
 
-[Formatting, Parsing, and Validating Data](https://sdk.openui5.org/topic/07e4b920f5734fd78fdaa236f26236d8.html "Data that is presented on the UI often has to be converted so that is human readable and fits to the locale of the user. On the other hand, data entered by the user has to be parsed and validated to be understood by the data source. For this purpose, you use formatters and data types.")
+[API Reference: `sap.m.SearchField`](https://sdk.openui5.org/#/api/sap.m.SearchField)
 
-[Require Modules in XML View and Fragment](https://sdk.openui5.org/topic/b11d853a8e784db6b2d210ef57b0f7d7.html "Modules can be required in XML views and fragments and assigned to aliases which can be used as variables in properties, event handlers, and bindings.")
+[API Reference: `sap.ui.model.Filter`](https://sdk.openui5.org/#/api/sap.ui.model.Filter)
 
-[API Reference: `sap.ui.base.ManagedObject.PropertyBindingInfo`](https://sdk.openui5.org/api/sap.ui.base.ManagedObject.PropertyBindingInfo#overview)
+[API Reference: `sap.ui.model.FilterOperator`](https://sdk.openui5.org/#/api/sap.ui.model.FilterOperator)
