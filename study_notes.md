@@ -148,3 +148,17 @@
     * `<Panel>`에 `class="sapUiResponsiveMargin"`을 추가하여 기기 화면 크기(PC, 폰)에 따라 바깥 여백이 알아서 조절되게 했습니다.
     * `<Button>`에 `class="sapUiSmallMarginEnd"`를 추가하여 오른쪽 입력창과의 간격을 살짝 띄워주었습니다.
     * 기존에 입력창 안에 있던 `description` 속성(Hello World 표시용)을 지우고, 대신 독립적인 `<Text>` 컨트롤을 새로 추가한 뒤 `class="sapUiSmallMargin"`을 주어 전체적인 모양새를 다듬었습니다.
+
+---
+
+## Step 14: Custom CSS and Theme Colors (커스텀 CSS)
+* **핵심 내용**: 
+  * SAPUI5가 제공하는 기본 디자인만 쓰지 않고, 나만의 독창적인 디자인(CSS)을 직접 추가하는 방법을 배웠습니다.
+  * `webapp/css/style.css` 파일 신규 생성:
+    * 나만의 스타일을 작성할 순수 CSS 파일을 만들었습니다.
+    * 글씨를 굵게 만드는 `.myCustomText { font-weight: bold; }` 등의 클래스를 정의했습니다.
+  * `webapp/manifest.json` 수정:
+    * 앱이 켜질 때 이 CSS 파일도 자동으로 읽어오도록 설정 파일의 `sap.ui5` 항목 안에 `resources` 블록을 추가하고 CSS 경로(`css/style.css`)를 등록했습니다.
+  * `webapp/view/App.view.xml` 수정:
+    * 다른 앱과 CSS 이름표가 겹치지 않게(캡슐화) 하려고 최상위 `<App>` 태그에 `class="myAppDemoWT"`를 달아주었습니다.
+    * 인사를 띄우던 기존 `<Text>`를 `<FormattedText>`로 바꾸고, `class="myCustomText"`를 붙여 우리가 만든 굵은 글씨 효과가 들어가게 했습니다. (추가로 `sapThemeHighlight-asColor`라는 기본 클래스도 달아 글씨가 테마 고유의 파란색으로 나오게 했습니다!)
