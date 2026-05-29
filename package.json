@@ -1,8 +1,8 @@
 {
-  "name": "ui5.walkthrough.step14",
+  "name": "ui5.walkthrough.step15",
   "version": "1.0.0",
   "author": "SAP SE",
-  "description": "OpenUI5 TypeScript Walkthrough: Step 14 - Custom CSS and Theme Colors",
+  "description": "OpenUI5 TypeScript Walkthrough: Step 15 - Nested Views",
   "private": true,
   "scripts": {
     "start": "ui5 serve -o index.html"
