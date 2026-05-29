@@ -270,3 +270,18 @@
     * `core:require="{ Formatter: 'ui5/walkthrough/model/formatter' }"` 속성을 써서 방금 만든 커스텀 포맷터 파일을 불러왔습니다.
     * `formatter: 'Formatter.statusText.bind($controller)'` 코드를 통해 데이터 상태 코드(A,B,C)를 우리가 만든 포맷터 함수에 던져주고, 변환된 결과값을 화면에 출력하도록 연결했습니다.
     * **중요**: `.bind($controller)`를 붙여주면, 포맷터 함수 안에서 `this`가 현재 화면의 컨트롤러를 가리키게 되어 다국어 파일(`i18n`) 데이터 등을 쉽게 꺼내 쓸 수 있습니다!
+
+---
+
+## Step 23: Filtering (리스트 필터링/검색)
+* **핵심 내용**: 
+  * 화면에 띄워진 수많은 데이터 목록(리스트) 중에서 사용자가 원하는 데이터만 쏙쏙 걸러내서 보여주는 **필터링(검색) 기능**을 추가했습니다.
+  * `webapp/view/InvoiceList.view.xml` 수정:
+    * 리스트(`<List>`) 위쪽에 검색창을 달아주기 위해 `<headerToolbar>` 구역을 만들고 그 안에 `<SearchField>` 컨트롤을 추가했습니다.
+    * 사용자가 돋보기 버튼을 누르거나 글자를 치고 엔터를 쳤을 때 검색되도록 `search=".onFilterInvoices"` 이벤트를 달았습니다.
+    * 또한 컨트롤러에서 리스트를 쉽게 조작할 수 있도록 `<List id="invoiceList">` 하고 ID를 부여했습니다.
+  * `webapp/controller/InvoiceList.controller.js` 수정:
+    * 필터 기능을 사용하기 위해 컨트롤러 상단에 `Filter`와 `FilterOperator` 모듈을 불러왔습니다.
+    * `onFilterInvoices` 함수를 정의하여 사용자가 검색창에 입력한 단어(`query`)를 가져오게 했습니다.
+    * `new Filter("ProductName", FilterOperator.Contains, query)` 코드를 통해 **"상품명(ProductName)에 내가 입력한 단어가 포함(Contains)되어 있는지 찾아라!"** 라는 검색 조건을 만들었습니다.
+    * 마지막으로 `this.byId("invoiceList").getBinding("items").filter(aFilter)` 를 호출하여, 만들어진 검색 조건을 리스트에 "적용해!" 라고 명령을 내렸습니다.
