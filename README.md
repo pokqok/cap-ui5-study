@@ -1,6 +1,6 @@
-## Step 17: Fragment Callbacks
+## Step 18: Icons
 
-Now that we have integrated the dialog, it's time to add some user interaction. The user will definitely want to close the dialog again at some point, so we add a button to close the dialog and assign an event handler.
+Our dialog is still pretty much empty. Since OpenUI5 is shipped with a large icon font that contains more than 500 icons, we will add an icon to greet our users when the dialog is opened.
 
 &nbsp;
 
@@ -8,114 +8,72 @@ Now that we have integrated the dialog, it's time to add some user interaction. 
 
 ### Preview
   
-![](assets/loioc351bbd078824c43bf1758b0c3679cbd_LowRes.png "The dialog now has an &quot;OK&quot; button")
+![](assets/loiofbc48e23cc7d45e393cc95bbbfc6e0a3_LowRes.png "An icon is now displayed in the dialog box")
 
-<sup>*The dialog now has an &quot;OK&quot; button to close the dialog*</sup>
+<sup>*An icon is now displayed in the dialog box*</sup>
 
-You can access the live preview by clicking on this link: [🔗 Live Preview of Step 17](https://ui5.github.io/tutorials/walkthrough/build/17/index-cdn.html).
+You can access the live preview by clicking on this link: [🔗 Live Preview of Step 18](https://ui5.github.io/tutorials/walkthrough/build/18/index-cdn.html).
 ***
 
 ### Coding
 
 <details class="ts-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 17](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-17.zip).
+You can download the solution for this step here: [📥 Download step 18](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-18.zip).
 
 </details>
 
 <details class="js-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 17](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-17-js.zip).
+You can download the solution for this step here: [📥 Download step 18](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-18-js.zip).
 
 </details>
 ***
 
-### webapp/controller/HelloPanel.controller.?s
+### webapp/view/HelloPanel.view.xml
 
-We add an `onCloseDialog` event handler function into the HelloPanel controller file that closes the dialog when triggered. To get the dialog instance we use the `byId` function and then call the `close` function of the dialog.
+We add an icon to the button that opens the dialog. The `sap-icon://` protocol is indicating that an icon from the *SAP icon font* should be loaded. The identifier `world` is the readable name of the icon in the icon font.
 
-```ts
-import Controller from "sap/ui/core/mvc/Controller";
-import MessageToast from "sap/m/MessageToast";
-import JSONModel from "sap/ui/model/json/JSONModel";
-import ResourceModel from "sap/ui/model/resource/ResourceModel";
-import ResourceBundle from "sap/base/i18n/ResourceBundle";
-import Dialog from "sap/m/Dialog";
-
-/**
- * @namespace ui5.walkthrough.controller
- */
-export default class HelloPanel extends Controller {
-    private dialog: Dialog;
-    onShowHello(): void {
-        // read msg from i18n model
-        const recipient = (this.getView()?.getModel() as JSONModel)?.getProperty("/recipient/name");
-        const resourceBundle = (this.getView()?.getModel("i18n") as ResourceModel)?.getResourceBundle() as ResourceBundle;
-        const msg = resourceBundle.getText("helloMsg", [recipient]) as string;
-        // show message
-        MessageToast.show(msg);
-    }
-    async onOpenDialog(): Promise<void> {
-        this.dialog ??= await this.loadFragment({
-             name: "ui5.walkthrough.view.HelloDialog"
-        }) as Dialog;
-        this.dialog.open();
-    }
-    onCloseDialog(): void {
-        (this.byId("helloDialog") as Dialog)?.close();
-    }
-};
-
+```xml
+<mvc:View
+   controllerName="ui5.walkthrough.controller.HelloPanel"
+   xmlns="sap.m"
+   xmlns:mvc="sap.ui.core.mvc">
+   <Panel
+      headerText="{i18n>helloPanelTitle}"
+      class="sapUiResponsiveMargin"
+      width="auto" >
+      <content>
+         <Button
+            id="helloDialogButton"
+            icon="sap-icon://world"
+            text="{i18n>openDialogButtonText}"
+            press=".onOpenDialog"
+            class="sapUiSmallMarginEnd"/>
+         <Button
+            text="{i18n>showHelloButtonText}"
+            press=".onShowHello"
+            class="myCustomButton"/>
+         <Input
+            value="{/recipient/name}"
+            valueLiveUpdate="true"
+            width="60%"/>
+         <FormattedText
+            htmlText="Hello {/recipient/name}"
+            class="sapUiSmallMargin sapThemeHighlight-asColor myCustomText"/>
+      </content>
+   </Panel>
+</mvc:View>
 ```
+&nbsp;
+>💡 **Tip:** <br>
+> You can look up other icons using the [Icon Explorer tool](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+> To call any icon, use its name as listed in the *Icon Explorer* in <code>sap-icon://<i>&lt;iconname&gt;</i></code>.
 
-```js
-sap.ui.define(["sap/ui/core/mvc/Controller", "sap/m/MessageToast"], function (Controller, MessageToast) {
-  "use strict";
-
-  const HelloPanel = Controller.extend("ui5.walkthrough.controller.HelloPanel", {
-    onShowHello() {
-      // read msg from i18n model
-      const recipient = this.getView()?.getModel()?.getProperty("/recipient/name");
-      const resourceBundle = this.getView()?.getModel("i18n")?.getResourceBundle();
-      const msg = resourceBundle.getText("helloMsg", [recipient]);
-      // show message
-      MessageToast.show(msg);
-    },
-    async onOpenDialog() {
-      this.dialog ??= await this.loadFragment({
-        name: "ui5.walkthrough.view.HelloDialog"
-      });
-      this.dialog.open();
-    },
-    onCloseDialog() {
-      this.byId("helloDialog")?.close();
-    }
-  });
-  ;
-  return HelloPanel;
-});
-
-```
-
-### webapp/i18n/i18n.properties
-
-We extend the text bundle by the new text for the dialog’s close button.
-
-
-```ini
-...
-# Hello Panel
-showHelloButtonText=Say Hello
-helloMsg=Hello {0}
-homePageTitle=UI5 TypeScript Walkthrough
-helloPanelTitle=Hello World
-openDialogButtonText=Say Hello With Dialog
-dialogCloseButtonText=Ok
-```
 
 ### webapp/view/HelloDialog.fragment.xml
 
-In the fragment definition, we add a button to the `beginButton` aggregation of the dialog and refer the press handler to the event handler we just defined in the controller of the panel’s content view.
+In the dialog fragment, we add an icon control to the content aggregation of the dialog. Luckily, the icon font also comes with a “Hello World” icon that is perfect for us here. We also define the size of the icon to `8rem` and set a medium margin on it.
 
 ```xml
 <core:FragmentDefinition
@@ -124,6 +82,12 @@ In the fragment definition, we add a button to the `beginButton` aggregation of 
    <Dialog
       id="helloDialog"
       title="Hello {/recipient/name}">
+      <content>
+         <core:Icon
+            src="sap-icon://hello-world"
+            size="8rem"
+            class="sapUiMediumMargin"/>
+      </content>
       <beginButton>
          <Button
             text="{i18n>dialogCloseButtonText}"
@@ -132,25 +96,28 @@ In the fragment definition, we add a button to the `beginButton` aggregation of 
    </Dialog>
 </core:FragmentDefinition>
 ```
-&nbsp;
-By using the `loadFragment` function to create the fragment content in the controller of the panel’s content view, the method will be invoked there when the button is pressed. The dialog has an aggregation named `beginButton` as well as `endButton`. Placing buttons in both of these aggregations makes sure that the `beginButton` is placed before the `endButton` on the UI. What `before` means, however, depends on the text direction of the current language. We therefore use the terms `begin` and `end` as a synonym to "left" and "right". In languages with left-to-right direction, the `beginButton` will be rendered left, the `endButton` on the right side; in right-to-left mode for specific languages the order is switched.
+
+***
+
+### Conventions
+
+-   Always use icon fonts rather than images wherever possible, as they are scalable without quality loss \(vector graphics\) and do not need to be loaded separately.
 
 &nbsp;
 
 ***
 
-**Next:** [Step 18: Icons](../18/README.md "Our dialog is still pretty much empty. Since  OpenUI5 is shipped with a large icon font that contains more than 500 icons, we will add an icon to greet our users when the dialog is opened.")
+**Next:** Step 19: [Aggregation Binding](../19/README.md "Now that we have established a good structure for our app, it's time to add some more functionality. We start exploring more features of data binding by adding some invoice data in JSON format that we display in a list below the panel.")
 
-**Previous** [Step 16: Dialogs and Fragments](../16/README.md "In this step, we will take a closer look at another element which can be used to assemble views: the fragment.")
+**Previous** Step 17: [Fragment Callbacks](../17/README.md "Now that we have integrated the dialog, it's time to add some user interaction. The user will definitely want to close the dialog again at some point, so we add a button to close the dialog and assign an event handler.")
 
 ***
 
 **Related Information**
 
-[Reusing UI Parts: Fragments](https://sdk.openui5.org/topic/36a5b130076e4b4aac2c27eebf324909.html "Fragments are light-weight UI parts (UI sub-trees) which can be reused, defined similar to views, but do not have any controller or other behavior code involved.")
+[Icon and Icon Pool](https://sdk.openui5.org/topic/21ea0ea94614480d9a910b2e93431291 "The sap-icon:// protocol supports the use of icons in your application based on the icon font concept, which uses an embedded font instead of a pixel image.")
 
-[Instantiation of Fragments](https://sdk.openui5.org/topic/04129b2798c447368f4c8922c3c33cd7.html "OpenUI5 provides two options to instantiate a fragment: If it is instantiated inside a controller extending sap.ui.core.mvc.Controller, the loadFragment() function is the way to go. However, if it is instantiated in a non-controller artefact, the generic function sap.ui.core.Fragment.load() can be used.")
+[API Reference: `sap.ui.core.Icon`](https://sdk.openui5.org/#/api/sap.ui.core.Icon)
 
-[API Reference: sap.m.Dialog](https://sdk.openui5.org/api/sap.m.Dialog)
+[Samples: `sap.ui.core.Icon` ](https://sdk.openui5.org/#/entity/sap.ui.core.Icon)
 
-[Samples: sap.m.Dialog](https://sdk.openui5.org/entity/sap.m.Dialog)
