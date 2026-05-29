@@ -1,8 +1,8 @@
 {
-  "name": "ui5.walkthrough.step23",
+  "name": "ui5.walkthrough.step24",
   "version": "1.0.0",
   "author": "SAP SE",
-  "description": "OpenUI5 TypeScript Walkthrough: Step 23 - Filtering",
+  "description": "OpenUI5 TypeScript Walkthrough: Step 24 - Sorting and Grouping",
   "private": true,
   "scripts": {
     "start": "ui5 serve -o index.html"
