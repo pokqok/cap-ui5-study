@@ -15,6 +15,9 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/m/MessageToast"], function (Co
         name: "ui5.walkthrough.view.HelloDialog"
       });
       this.dialog.open();
+    },
+    onCloseDialog() {
+      this.byId("helloDialog")?.close();
     }
   });
   return HelloPanel;
