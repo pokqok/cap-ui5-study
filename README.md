@@ -1,6 +1,12 @@
-## Step 15: Nested Views
+## Step 16: Dialogs and Fragments
 
-Our panel content is getting more and more complex and now it is time to move the panel content to a separate view. With that approach, the application structure is much easier to understand, and the individual parts of the app can be reused.
+In this step, we will take a closer look at another element which can be used to assemble views: the fragment.
+
+Fragments are light-weight UI parts \(UI subtrees\) which can be reused but do not have any controller. This means, whenever you want to define a certain part of your UI to be reusable across multiple views, or when you want to exchange some parts of a view against one another under certain circumstances \(different user roles, edit mode vs read-only mode\), a fragment is a good candidate, especially where no additional controller logic is required.
+
+A fragment can consist of any number of controls. At runtime, fragments placed in a view behave similar to "normal" view content, which means controls inside the fragment will just be included into the view’s DOM when rendered. There are controls that are not designed to become part of a view, for example, dialogs. But even for these controls, fragments can be particularly useful, as you will see in a minute.
+
+We will now add a dialog to our app. Dialogs are special, because they open on top of the regular app content and thus are not part of a specific view. That means the dialog must be instantiated somewhere in the controller code, but since we want to stick with the declarative approach and create reusable artifacts to be as flexible as possible, we will create an XML fragment containing the dialog. A dialog, after all, can be used in more than one view of your app.
 
 &nbsp;
 
@@ -8,11 +14,11 @@ Our panel content is getting more and more complex and now it is time to move th
 
 ### Preview
   
-![](assets/loiof3724d2f97e94a78b27d8ab01ff9c37d_LowRes.png "The panel content is now refactored to a separate view \(No visual changes to last step\)")
+![](assets/loio0916080895e144ed8b31963bfb18e17f_LowRes.png "A dialog opens when the new &quot;Say Hello With Dialog&quot; button is clicked")
 
-<sup>*The panel content is now refactored to a separate view \(No visual changes to last step\)*</sup>
+<sup>*A dialog opens when the new “Say Hello With Dialog” button is clicked*</sup>
 
-You can access the live preview by clicking on this link: [🔗 Live Preview of Step 15](https://ui5.github.io/tutorials/walkthrough/build/15/index-cdn.html).
+You can access the live preview by clicking on this link: [🔗 Live Preview of Step 16](https://ui5.github.io/tutorials/walkthrough/build/16/index-cdn.html).
 
 ***
 
@@ -21,20 +27,40 @@ You can access the live preview by clicking on this link: [🔗 Live Preview of 
 
 <details class="ts-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 15](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-15.zip).
+You can download the solution for this step here: [📥 Download step 16](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-16.zip).
 
 </details>
 
 <details class="js-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 15](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-15-js.zip).
+You can download the solution for this step here: [📥 Download step 16](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-16-js.zip).
 
 </details>
 ***
 
-### webapp/controller/HelloPanel.controller.?s \(New\)
+### webapp/view/HelloDialog.fragment.xml \(New\)
 
-In folder `webapp/controller` we create a new `HelloPanel.controller.?s` file and move the method `onShowHello` of the app controller to it, so we get a reusable asset.
+We add a new XML file to declaratively define our dialog in a fragment. The FragmentDefinition element is located in the `sap.ui.core` library, so we add an `xml` namespace for it inside the `FragmentDefinition` tag.
+
+```xml
+<core:FragmentDefinition
+   xmlns="sap.m"
+   xmlns:core="sap.ui.core" >
+   <Dialog
+      id="helloDialog"
+      title="Hello {/recipient/name}"/>
+</core:FragmentDefinition>
+```
+&nbsp;
+The syntax is similar to a view, but since fragments do not have a controller this attribute is missing. Also, the fragment does not have any footprint in the DOM tree of the app, and there is no control instance of the fragment itself (only the contained controls). It is simply a container for a set of reuse controls.
+
+### webapp/controller/HelloPanel.controller.?s
+
+In the HelloPanel controller, we define a new event handler function `onOpenDialog` which calls the dialog in the HelloDialog fragment when triggered. To do so we need the `sap.m.Dialog` module.
+
+Using async/await, we handle the opening of the dialog asynchronously whenever the event is triggered.
+
+If the dialog fragment does not exist yet, the fragment is instantiated by calling the `loadFragment` API. We then store the dialog on the controller instance. This allows us to reuse the dialog every time the event is triggered again.
 
 ```ts
 import Controller from "sap/ui/core/mvc/Controller";
@@ -42,37 +68,39 @@ import MessageToast from "sap/m/MessageToast";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
 import ResourceBundle from "sap/base/i18n/ResourceBundle";
+import Dialog from "sap/m/Dialog";
 
 /**
  * @namespace ui5.walkthrough.controller
  */
 export default class HelloPanel extends Controller {
-    
+    private dialog : Dialog;
+
     onShowHello(): void {
-        // read msg from i18n model
-        // functions with generic return values require casting 
-        const resourceBundle = (this.getView()?.getModel("i18n") as ResourceModel)?.getResourceBundle() as ResourceBundle;
-        const recipient = (this.getView()?.getModel() as JSONModel)?.getProperty("/recipient/name");
-        const msg = resourceBundle.getText("helloMsg", [recipient]) as string;
-        // show message
-        MessageToast.show(msg);
+        ...
+    }
+    async onOpenDialog(): Promise<void> {
+        this.dialog ??= await this.loadFragment({
+             name: "ui5.walkthrough.view.HelloDialog"
+        }) as Dialog;
+        this.dialog.open();
     }
 };
 
 ```
-
 ```js
 sap.ui.define(["sap/ui/core/mvc/Controller", "sap/m/MessageToast"], function (Controller, MessageToast) {
   "use strict";
 
   const HelloPanel = Controller.extend("ui5.walkthrough.controller.HelloPanel", {
     onShowHello() {
-      // read msg from i18n model
-      const recipient = this.getView()?.getModel()?.getProperty("/recipient/name");
-      const resourceBundle = this.getView()?.getModel("i18n")?.getResourceBundle();
-      const msg = resourceBundle.getText("helloMsg", [recipient]);
-      // show message
-      MessageToast.show(msg);
+      ...
+    },
+    async onOpenDialog() {
+      this.dialog ??= await this.loadFragment({
+        name: "ui5.walkthrough.view.HelloDialog"
+      });
+      this.dialog.open();
     }
   });
   ;
@@ -80,10 +108,28 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/m/MessageToast"], function (Co
 });
 
 ```
+&nbsp;
+> 💡 **Tip:** <br>
+> To reuse the dialog opening and closing functionality in other controllers, you might create a new file `ui5.walkthrough.controller.controller.BaseController`, which extends `sap.ui.core.mvc.Controller`, and put all your dialog-related coding into this controller. Now, all the other controllers can extend from `ui5.walkthrough.controller.BaseController` instead of `sap.ui.core.mvc.Controller`.
 
-### webapp/view/HelloPanel.view.xml \(New\)
 
-We create a new `HelloPanel.view.xml` file in folder `webapp/view` and move the whole panel from the App view to it. We also reference the controller we just created for the view by setting it to the `controllerName` attribute of the XML view.
+### webapp/i18n/i18n.properties
+
+We add a new text for the button to open the dialog to the text bundle. We will add this button to the HelloPanel view in the next step.
+
+```ini
+...
+# Hello Panel
+showHelloButtonText=Say Hello
+helloMsg=Hello {0}
+homePageTitle=UI5 TypeScript Walkthrough
+helloPanelTitle=Hello World
+openDialogButtonText=Say Hello With Dialog
+```
+
+### webapp/view/HelloPanel.view.xml
+
+We add a new button to the view to open the dialog and assign an unique `id`to it. The button calls the event handler function `onOpenDialog` in the controller of the panel’s content view. We assign the new text to the text property of the button and refer class to `sapUiResponsiveMargin` to pimp up the design.
 
 ```xml
 <mvc:View
@@ -95,6 +141,11 @@ We create a new `HelloPanel.view.xml` file in folder `webapp/view` and move the 
       class="sapUiResponsiveMargin"
       width="auto" >
       <content>
+         <Button
+            id="helloDialogButton"
+            text="{i18n>openDialogButtonText}"
+            press=".onOpenDialog"
+            class="sapUiSmallMarginEnd"/>
          <Button
             text="{i18n>showHelloButtonText}"
             press=".onShowHello"
@@ -110,70 +161,33 @@ We create a new `HelloPanel.view.xml` file in folder `webapp/view` and move the 
    </Panel>
 </mvc:View>
 ```
-
-### webapp/view/App.view.xml
-
-In the App view, we remove the panel control and its content and put the `XMLView` control to the content of the page instead. We add the `viewName` attribute with the value `ui5.walkthrough.view.HelloPanel` to reference the new view that now contains the panel.
-
-```xml
-<mvc:View
-	controllerName="ui5.walkthrough.controller.App"
-	xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc"
-	displayBlock="true">
-	<Shell>
-		<App class="myAppDemoWT">
-			<pages>
-				<Page title="{i18n>homePageTitle}">
-					<content>
-						<mvc:XMLView viewName="ui5.walkthrough.view.HelloPanel"/>
-					</content>
-				</Page>
-			</pages>
-		</App>
-	</Shell>
-</mvc:View>
-```
-
-### webapp/controller/App.controller.?s
-
-We remove the `onShowHello` method from the App controller, as this is not needed anymore.
-
-```ts
-import Controller from "sap/ui/core/mvc/Controller";
-/**
- * @namespace ui5.walkthrough.controller
- */
-export default class App extends Controller {
-
-};
-
-```
-
-```js
-sap.ui.define(["sap/ui/core/mvc/Controller"], function (Controller) {
-  "use strict";
-
-  const App = Controller.extend("ui5.walkthrough.controller.App", {});
-  ;
-  return App;
-});
-
-```
 &nbsp;
+You will need the id of the button control `id="helloDialogButton"` in [Step 28: Integration Test with OPA](../28/README.md). 
 
-We have now moved everything out of the app view and controller. The app controller remains an empty stub for now, we will use it later to add more functionality.
+It is a good practice to set a unique ID like `helloWorldButton` to key controls of your app so that they can be identified easily. If the attribute `id` is not specified, the OpenUI5 runtime generates unique but changing ID like `__button23` for the control. Inspect the DOM elements of your app in the browser to see the difference.
 
 &nbsp;
 
 ***
 
-**Next:** [Step 16: Dialogs and Fragments](../16/README.md "In this step, we will take a closer look at another element which can be used to assemble views: the fragment.")
+**Next:** [Step 17: Fragment Callbacks](../17/README.md "Now that we have integrated the dialog, it's time to add some user interaction. The user will definitely want to close the dialog again at some point, so we add a button to close the dialog and assign an event handler.")
 
-**Previous:** [Step 14: Margins and Paddings](../14/README.md "Sometimes we need to define some more fine-granular layouts and this is when we can use the flexibility of CSS by adding custom style classes to controls and style them as we like.")
+**Previous:** [Step15: Nested Views](../15/README.md "Our panel content is getting more and more complex and now it is time to move the panel content to a separate view. With that approach, the application structure is much easier to understand, and the individual parts of the app can be reused.")
 
 ***
 
 **Related Information**  
 
-[API Reference: `sap.ui.core.mvc.XMLView`](https://sdk.openui5.org/api/sap.ui.core.mvc.XMLView#controlProperties)
+[Reusing UI Parts: Fragments](https://sdk.openui5.org/topic/36a5b130076e4b4aac2c27eebf324909.html "Fragments are light-weight UI parts (UI sub-trees) which can be reused, defined similar to views, but do not have any controller or other behavior code involved.")
+
+[Dialogs and other Popups as Fragments](https://sdk.openui5.org/topic/448c6418153149a79c8ff4370808f9c1.html "You can use fragments to declaratively define dialogs and other popup controls which are not part of the normal page UI structure.")
+
+[API Reference: sap.m.Dialog](https://sdk.openui5.org/api/sap.m.Dialog)
+
+[Samples: sap.m.Dialog](https://sdk.openui5.org/entity/sap.m.Dialog)
+
+[Stable IDs: All You Need to Know](https://sdk.openui5.org/topic/f51dbb78e7d5448e838cdc04bdf65403.html "Stable IDs are IDs for controls, elements, or components that you set yourself in the respective id property or attribute as opposed to IDs that are generated by  OpenUI5. Stable means that the IDs are concatenated with the application component ID and do not have any auto-generated parts.")
+
+[Instantiation of Fragments](https://sdk.openui5.org/topic/04129b2798c447368f4c8922c3c33cd7.html "OpenUI5 provides two options to instantiate a fragment: If it is instantiated inside a controller extending sap.ui.core.mvc.Controller, the loadFragment() function is the way to go. However, if it is instantiated in a non-controller artefact, the generic function sap.ui.core.Fragment.load() can be used.")
+
+[API Reference: `sap.ui.core.Fragment`](https://sdk.openui5.org/#/api/sap.ui.core.Fragment)

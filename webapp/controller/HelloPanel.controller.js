@@ -9,6 +9,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/m/MessageToast"], function (Co
       const msg = resourceBundle.getText("helloMsg", [recipient]);
       // show message
       MessageToast.show(msg);
+    },
+    async onOpenDialog() {
+      this.dialog ??= await this.loadFragment({
+        name: "ui5.walkthrough.view.HelloDialog"
+      });
+      this.dialog.open();
     }
   });
   return HelloPanel;
