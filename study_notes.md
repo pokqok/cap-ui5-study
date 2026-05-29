@@ -138,3 +138,13 @@
     * 기존 최상위 태그였던 `<App>`을 `<Shell>` 태그로 한 번 더 묶어주었습니다.
     * 모바일 환경에서는 큰 차이가 없지만, 데스크톱(PC)과 같이 큰 화면에서 앱을 열 때, 화면이 양옆으로 무한정 늘어나는 것을 방지해 줍니다. 
     * 앱을 화면 중앙에 적절한 너비로 예쁘게 배치(레터박스 효과)하여 가독성을 높여주는 역할을 합니다.
+
+---
+
+## Step 13: Margins and Paddings (여백 조정)
+* **핵심 내용**: 
+  * UI 요소들이 너무 딱딱하게 붙어 있는 것을 개선하기 위해, SAPUI5에서 기본 제공하는 표준 CSS 여백 클래스를 사용했습니다.
+  * `webapp/view/App.view.xml` 수정:
+    * `<Panel>`에 `class="sapUiResponsiveMargin"`을 추가하여 기기 화면 크기(PC, 폰)에 따라 바깥 여백이 알아서 조절되게 했습니다.
+    * `<Button>`에 `class="sapUiSmallMarginEnd"`를 추가하여 오른쪽 입력창과의 간격을 살짝 띄워주었습니다.
+    * 기존에 입력창 안에 있던 `description` 속성(Hello World 표시용)을 지우고, 대신 독립적인 `<Text>` 컨트롤을 새로 추가한 뒤 `class="sapUiSmallMargin"`을 주어 전체적인 모양새를 다듬었습니다.
