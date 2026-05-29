@@ -175,3 +175,18 @@
   * `webapp/view/App.view.xml` 수정:
     * 패널을 잘라내어 텅 빈 자리에 `<mvc:XMLView viewName="ui5.walkthrough.view.HelloPanel"/>` 딱 한 줄을 적어넣었습니다. 
     * 이렇게 하면 앱이 켜질 때 이 한 줄짜리 코드가 아까 만든 패널 조각 뷰를 불러와서 화면에 쏙 끼워 맞춰 줍니다!
+
+---
+
+## Step 16: Dialogs and Fragments (팝업창과 프래그먼트)
+* **핵심 내용**: 
+  * 화면 위에 띄우는 팝업창(`Dialog`)을 만들고, 컨트롤러가 없는 가벼운 UI 조각인 `Fragment(프래그먼트)`의 개념을 배웠습니다.
+  * `webapp/view/HelloDialog.fragment.xml` 파일 신규 생성:
+    * 팝업창 전용 화면 파일을 만들었습니다.
+    * 여기서 `<core:FragmentDefinition>` 이라는 특별한 태그를 사용했습니다. 프래그먼트(Fragment)는 View와 달리 **자체 컨트롤러를 가질 수 없는 순수한 UI 조각**입니다. 팝업창처럼 뷰에 종속되지 않고 가볍게 띄울 때 주로 씁니다.
+  * `webapp/view/HelloPanel.view.xml` 수정:
+    * 기존 패널 안에 팝업창을 띄우기 위한 "Open Dialog" 버튼(`<Button press=".onOpenDialog"/>`)을 추가했습니다.
+  * `webapp/controller/HelloPanel.controller.js` 수정:
+    * 버튼을 누르면 실행될 `onOpenDialog` 비동기 함수를 추가했습니다.
+    * `this.loadFragment({ name: "ui5.walkthrough.view.HelloDialog" })`를 호출하여 아까 만든 프래그먼트 파일을 읽어온 뒤, `.open()` 함수를 써서 화면에 띄웁니다.
+    * `??=` (Null 병합 할당) 연산자를 써서, 버튼을 여러 번 누르더라도 팝업창이 메모리에 한 번만 생성되도록 최적화했습니다.
