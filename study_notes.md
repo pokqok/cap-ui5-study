@@ -230,3 +230,18 @@
     * 리스트 내부에 `<ObjectListItem title="{invoice>Quantity} x {invoice>ProductName}"/>` 라고 **단 한 번만 템플릿(붕어빵 틀)을 정의**해 두면, UI5가 데이터 개수만큼 알아서 항목을 반복 생성해 줍니다!
   * `webapp/view/App.view.xml` 수정:
     * 기존의 `HelloPanel` 밑에 방금 만든 `InvoiceList` 뷰를 나란히 끼워 넣었습니다.
+
+---
+
+## Step 20: Data Types (데이터 타입과 포맷팅)
+* **핵심 내용**: 
+  * 화면에 데이터를 그냥 뿌리지 않고, 각 나라의 표기법이나 통화(돈) 형식에 맞게 예쁘게 변환(Formatting)해주는 기능을 적용했습니다.
+  * `webapp/controller/InvoiceList.controller.js` 신규 생성:
+    * 리스트 화면을 관리할 전용 컨트롤러를 만들었습니다.
+    * 초기화될 때 통화 코드 데이터(`{ currency: "EUR" }`)를 담은 뷰 전용 모델(`view`)을 만들어서 세팅했습니다.
+  * `webapp/view/InvoiceList.view.xml` 수정:
+    * `<ObjectListItem>`에 가격을 표시하는 `number` 속성을 추가했습니다.
+    * `number="{ parts: ['invoice>ExtendedPrice', 'view>/currency'], type: 'Currency', formatOptions: { showMeasure: false } }"`
+    * 위 코드는 "가격 숫자와 유로(EUR) 글자를 조합해서 UI5의 `Currency` 데이터 타입으로 표시해라!" 라는 뜻입니다.
+    * 이렇게 하면 `87.2000` 같은 원시 데이터가 알아서 소수점 두 자리(`87.20`)로 반올림되고 쉼표가 찍히는 등 아주 깔끔하게 포맷팅됩니다.
+    * XML 파일 내에서 `core:require`라는 속성을 사용해 자바스크립트의 모듈(`sap/ui/model/type/Currency`)을 직접 가져다 쓰는 새로운 문법도 도입되었습니다.
