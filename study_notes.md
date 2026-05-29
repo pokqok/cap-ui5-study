@@ -190,3 +190,15 @@
     * 버튼을 누르면 실행될 `onOpenDialog` 비동기 함수를 추가했습니다.
     * `this.loadFragment({ name: "ui5.walkthrough.view.HelloDialog" })`를 호출하여 아까 만든 프래그먼트 파일을 읽어온 뒤, `.open()` 함수를 써서 화면에 띄웁니다.
     * `??=` (Null 병합 할당) 연산자를 써서, 버튼을 여러 번 누르더라도 팝업창이 메모리에 한 번만 생성되도록 최적화했습니다.
+
+---
+
+## Step 17: Fragment Callbacks (프래그먼트 이벤트 연결 - 팝업 닫기)
+* **핵심 내용**: 
+  * 이전 단계에서 만든 팝업창 내부에 드디어 [닫기] 버튼을 만들고, 버튼을 누르면 창이 닫히도록 이벤트 로직을 연결했습니다.
+  * `webapp/view/HelloDialog.fragment.xml` 수정:
+    * 팝업창 아랫부분에 버튼을 배치하기 위해 `<beginButton>` 태그를 열고, 그 안에 닫기 버튼(`<Button press=".onCloseDialog"/>`)을 추가했습니다.
+  * `webapp/controller/HelloPanel.controller.js` 수정:
+    * 버튼을 눌렀을 때 실행될 `onCloseDialog` 함수를 추가했습니다.
+    * `this.byId("helloDialog")?.close();` 코드를 통해 팝업창을 화면에서 닫도록 구현했습니다.
+    * **중요한 점**: 프래그먼트 파일 자체는 전용 컨트롤러가 없지만, `loadFragment` 함수를 통해 메인 화면(View)에 불러와서 종속시켰기 때문에, 메인 화면의 컨트롤러(`HelloPanel.controller.js`)에 이벤트 함수를 적어두면 알아서 찰떡같이 연결됩니다!
