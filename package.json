@@ -1,8 +1,8 @@
 {
-  "name": "ui5.walkthrough.step20",
+  "name": "ui5.walkthrough.step21",
   "version": "1.0.0",
   "author": "SAP SE",
-  "description": "OpenUI5 TypeScript Walkthrough: Step 20 - Data Types",
+  "description": "OpenUI5 TypeScript Walkthrough: Step 21 - Expression Binding",
   "private": true,
   "scripts": {
     "start": "ui5 serve -o index.html"
