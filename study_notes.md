@@ -202,3 +202,15 @@
     * 버튼을 눌렀을 때 실행될 `onCloseDialog` 함수를 추가했습니다.
     * `this.byId("helloDialog")?.close();` 코드를 통해 팝업창을 화면에서 닫도록 구현했습니다.
     * **중요한 점**: 프래그먼트 파일 자체는 전용 컨트롤러가 없지만, `loadFragment` 함수를 통해 메인 화면(View)에 불러와서 종속시켰기 때문에, 메인 화면의 컨트롤러(`HelloPanel.controller.js`)에 이벤트 함수를 적어두면 알아서 찰떡같이 연결됩니다!
+
+---
+
+## Step 18: Icons (아이콘 추가)
+* **핵심 내용**: 
+  * 글자만 있어서 딱딱해 보이던 화면에, SAPUI5가 무료로 제공하는 '벡터 아이콘'들을 넣어 화면을 꾸미는 방법을 배웠습니다.
+  * `webapp/view/HelloPanel.view.xml` 수정:
+    * "Open Dialog" 버튼에 `icon="sap-icon://world"` 속성을 추가했습니다. 
+    * 이렇게 하면 버튼 글자 왼쪽에 귀여운 지구본 아이콘이 쏙 들어갑니다!
+  * `webapp/view/HelloDialog.fragment.xml` 수정:
+    * 팝업창 안쪽 내용물(`<content>`) 영역에 `<core:Icon src="sap-icon://hello-world" size="8rem" class="sapUiMediumMargin"/>` 코드를 추가했습니다.
+    * 팝업창 한가운데에 아주 커다란(`8rem`) 인사하는 캐릭터 모양 아이콘이 나타나게 되어, 화면이 훨씬 생동감 있어 보입니다.
