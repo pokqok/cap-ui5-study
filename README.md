@@ -1,6 +1,8 @@
-## Step 12: Shell Control as Container
+## Step 13: Margins and Paddings
 
-Now we use a shell control as container for our app and use it as our new root element. The shell takes care of visual adaptation of the application to the device’s screen size by introducing a so-called letterbox on desktop screens.
+Our app content is still glued to the corners of the letterbox. To fine-tune our layout, we can add margins and paddings to the controls that we added in the previous step.
+
+Instead of manually adding CSS to the controls, we will use the standard classes provided by OpenUI5. These classes take care of consistent sizing steps, left-to-right support, and responsiveness.
 
 &nbsp;
 
@@ -8,11 +10,11 @@ Now we use a shell control as container for our app and use it as our new root e
 
 ### Preview
   
-![](assets/loio0becf3ee81f5486a864e3b39ba036402_LowRes.png "The app is now run in a shall that limits the app width")
+![](assets/loio0becf3ee81f5486a864e3b39ba036402_LowRes.png "The layout of the panel and its content now has margins and padding")
 
-<sup>*The app is now run in a shell that limits the app width*</sup>
+<sup>*The layout of the panel and its content now has margins and padding*</sup>
 
-You can access the live preview by clicking on this link: [🔗 Live Preview of Step 12](https://ui5.github.io/tutorials/walkthrough/build/12/index-cdn.html).
+You can access the live preview by clicking on this link: [🔗 Live Preview of Step 13](https://ui5.github.io/tutorials/walkthrough/build/13/index-cdn.html).
 
 ***
 
@@ -20,20 +22,26 @@ You can access the live preview by clicking on this link: [🔗 Live Preview of 
 
 <details class="ts-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 12](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-12.zip).
+You can download the solution for this step here: [📥 Download step 13](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-13.zip).
 
 </details>
 
 <details class="js-only" markdown="1">
 
-You can download the solution for this step here: [📥 Download step 12](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-12-js.zip).
+You can download the solution for this step here: [📥 Download step 13](https://ui5.github.io/tutorials/walkthrough/walkthrough-step-13-js.zip).
 
 </details>
 ***
 
 ### webapp/view/App.view.xml
 
-In your App view, we put the `App` control inside a `sap/m/Shell` control.
+To layout the panel, we add the CSS class `sapUiResponsiveMargin` that will add some space around the panel. We have to set the width of the panel to `auto` since the margin would otherwise be added to the default width of 100% and exceed the page size.
+
+If you decrease the screen size, then you can actually see that the margin also decreases. As the name suggests, the margin is responsive and adapts to the screen size of the device. Tablets will get a smaller margin and phones in portrait mode will not get a margin to save space on these small screens. 
+
+Margins can be added to all kinds of controls and are available in many different options. We can even add space between the button and the input field by adding class `sapUiSmallMarginEnd` to the button.
+
+To format the output text individually, we remove the description from the input field and add a new `Text` control with the same value. Here we also use a small margin to align it with the other content. Similarly, we could add the standard padding classes to layout the inner parts of container controls such as our panel, but as it already brings a padding by default, this is not needed here.
 
 ```xml
 <mvc:View
@@ -47,16 +55,21 @@ In your App view, we put the `App` control inside a `sap/m/Shell` control.
 				<Page title="{i18n>homePageTitle}">
 					<content>
 						<Panel
-							headerText="{i18n>helloPanelTitle}">
+							headerText="{i18n>helloPanelTitle}"
+							class="sapUiResponsiveMargin"
+							width="auto">
 							<content>
 								<Button
 									text="{i18n>showHelloButtonText}"
-									press=".onShowHello"/>
+									press=".onShowHello"
+									class="sapUiSmallMarginEnd"/>
 								<Input
 									value="{/recipient/name}"
-									description="Hello {/recipient/name}"
 									valueLiveUpdate="true"
 									width="60%"/>
+								<Text
+									text="Hello {/recipient/name}"
+									class="sapUiSmallMargin"/>	
 							</content>
 						</Panel>
 					</content>
@@ -67,22 +80,25 @@ In your App view, we put the `App` control inside a `sap/m/Shell` control.
 </mvc:View>
 ```
 
-The `Shell` control is now the outermost control of our app and automatically displays a so-called letterbox, if the screen size is larger than a certain width.
+***
 
-> :information_source: **Note:**
-> We don't add the `Shell` control to the declarative UI definition in the XML view if apps run in an external shell, like the SAP Fiori launchpad that already has a shell around the component UI.
-There are further options to customize the shell, like setting a custom background image or color and setting a custom logo. Check the related API reference for more details.
+### Conventions
+
+-   Use the standard OpenUI5 CSS classes for the layout if possible.
 
 &nbsp;
 
 ***
 
-**Next:** [Step 13: Margins and Paddings](../13/README.md "Our app content is still glued to the corners of the letterbox. To fine-tune our layout, we can add margins and paddings to the controls that we added in the previous step.")
+**Next:** [Step 14: Custom CSS and Theme Colors](../14/README.md "Sometimes we need to define some more fine-granular layouts and this is when we can use the flexibility of CSS by adding custom style classes to controls and style them as we like.")
 
-**Previous:** [Step 11: Pages and Panels](../11/README.md "After all the work on the app structure it’s time to improve the look of our app. We will use two controls from the sap.m library to add a bit more &quot;bling&quot; to our UI. You will also learn about control aggregations in this step.")
+**Previous:** [Step 12: Shell Control as Container](../12/README.md "Now we use a shell control as container for our app and use it as our new root element. The shell takes care of visual adaptation of the application to the device’s screen size by introducing a so-called letterbox on desktop screens.")
 
 ***
 
 **Related Information**  
 
-[API Reference: `sap.m.Shell`](https://sdk.openui5.org/#/api/sap.m.Shell)
+
+[Using Predefined CSS Margin Classes](https://sdk.openui5.org/topic/777168ffe8324873973151dae2356d1c.html "OpenUI5 gives you the option of adding spacing in between controls by adding a margin. A margin clears an area around its respective control, outside of its border.")
+
+[Using Container Content Padding CSS Classes](https://sdk.openui5.org/topic/c71f6df62dae47ca8284310a6f5fc80a.html "For many container controls in OpenUI5, such as a Dialog or a Page, you can define whether the container should have a padding within the content area. A padding clears the area between the container layout and the controls that are displayed in the content area.")
