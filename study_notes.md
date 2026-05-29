@@ -214,3 +214,19 @@
   * `webapp/view/HelloDialog.fragment.xml` 수정:
     * 팝업창 안쪽 내용물(`<content>`) 영역에 `<core:Icon src="sap-icon://hello-world" size="8rem" class="sapUiMediumMargin"/>` 코드를 추가했습니다.
     * 팝업창 한가운데에 아주 커다란(`8rem`) 인사하는 캐릭터 모양 아이콘이 나타나게 되어, 화면이 훨씬 생동감 있어 보입니다.
+
+---
+
+## Step 19: Aggregation Binding (리스트 데이터 바인딩)
+* **핵심 내용**: 
+  * 여러 개의 데이터(배열)를 화면에 목록(List) 형태로 반복해서 쫙 뿌려주는 **Aggregation Binding** 기법을 배웠습니다.
+  * `webapp/model/localInvoices.json` 파일 생성:
+    * 상품과 수량 정보가 들어있는 가짜 백엔드 데이터(JSON 배열) 파일을 만들었습니다.
+  * `webapp/manifest.json` 수정:
+    * 앱이 켜질 때 이 JSON 데이터를 읽어오도록 `models` 항목에 `invoice`라는 이름의 모델을 새로 등록했습니다.
+  * `webapp/view/InvoiceList.view.xml` 파일 분리:
+    * 목록을 전담해서 보여줄 새로운 조각 뷰를 만들었습니다.
+    * `<List items="{invoice>/Invoices}">` 코드가 핵심입니다. `invoice` 모델 안의 `Invoices` 배열 데이터를 가져와서 리스트를 만들겠다고 선언한 것입니다.
+    * 리스트 내부에 `<ObjectListItem title="{invoice>Quantity} x {invoice>ProductName}"/>` 라고 **단 한 번만 템플릿(붕어빵 틀)을 정의**해 두면, UI5가 데이터 개수만큼 알아서 항목을 반복 생성해 줍니다!
+  * `webapp/view/App.view.xml` 수정:
+    * 기존의 `HelloPanel` 밑에 방금 만든 `InvoiceList` 뷰를 나란히 끼워 넣었습니다.
