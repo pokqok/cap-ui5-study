@@ -162,3 +162,16 @@
   * `webapp/view/App.view.xml` 수정:
     * 다른 앱과 CSS 이름표가 겹치지 않게(캡슐화) 하려고 최상위 `<App>` 태그에 `class="myAppDemoWT"`를 달아주었습니다.
     * 인사를 띄우던 기존 `<Text>`를 `<FormattedText>`로 바꾸고, `class="myCustomText"`를 붙여 우리가 만든 굵은 글씨 효과가 들어가게 했습니다. (추가로 `sapThemeHighlight-asColor`라는 기본 클래스도 달아 글씨가 테마 고유의 파란색으로 나오게 했습니다!)
+
+---
+
+## Step 15: Nested Views (중첩 뷰)
+* **핵심 내용**: 
+  * 화면이 점점 복잡해지는 것에 대비해, 메인 화면(`App View`) 안에 작은 조각 화면(`HelloPanel View`)을 분리해서 끼워 넣는(중첩) 방법을 배웠습니다.
+  * `webapp/view/HelloPanel.view.xml` 파일 분리:
+    * `App.view.xml`에 길게 적혀있던 `<Panel>` 부분을 통째로 잘라내어 새로운 조각 뷰 파일로 독립시켰습니다.
+  * `webapp/controller/HelloPanel.controller.js` 파일 분리:
+    * 패널 안에 있는 버튼을 눌렀을 때 작동하던 `onShowHello` 로직 역시, 기존 `App.controller.js`에서 잘라내어 새로운 전용 컨트롤러 파일로 옮겼습니다. (이제 App 컨트롤러는 텅 비게 되었습니다.)
+  * `webapp/view/App.view.xml` 수정:
+    * 패널을 잘라내어 텅 빈 자리에 `<mvc:XMLView viewName="ui5.walkthrough.view.HelloPanel"/>` 딱 한 줄을 적어넣었습니다. 
+    * 이렇게 하면 앱이 켜질 때 이 한 줄짜리 코드가 아까 만든 패널 조각 뷰를 불러와서 화면에 쏙 끼워 맞춰 줍니다!
