@@ -245,3 +245,14 @@
     * 위 코드는 "가격 숫자와 유로(EUR) 글자를 조합해서 UI5의 `Currency` 데이터 타입으로 표시해라!" 라는 뜻입니다.
     * 이렇게 하면 `87.2000` 같은 원시 데이터가 알아서 소수점 두 자리(`87.20`)로 반올림되고 쉼표가 찍히는 등 아주 깔끔하게 포맷팅됩니다.
     * XML 파일 내에서 `core:require`라는 속성을 사용해 자바스크립트의 모듈(`sap/ui/model/type/Currency`)을 직접 가져다 쓰는 새로운 문법도 도입되었습니다.
+
+---
+
+## Step 21: Expression Binding (표현식 바인딩)
+* **핵심 내용**: 
+  * 자바스크립트 파일에 함수를 따로 만들지 않고도, XML 화면 코드 안에서 곧바로 간단한 조건문(if/else) 연산을 처리하는 **표현식 바인딩(Expression Binding)** 기법을 배웠습니다.
+  * `webapp/view/InvoiceList.view.xml` 수정:
+    * `<ObjectListItem>`에 숫자의 색상(상태)을 결정하는 `numberState` 속성을 추가했습니다.
+    * `numberState="{= ${invoice>ExtendedPrice} > 50 ? 'Error' : 'Success' }"`
+    * 위 코드는 **"만약 가격(`ExtendedPrice`)이 50을 초과하면 'Error'(빨간색)로 칠하고, 50 이하면 'Success'(초록색)로 칠해라!"** 라는 조건문(삼항 연산자)입니다.
+    * `{= ... }` 기호와 `${데이터}` 기호를 조합하면 화면 파일 안에서도 자바스크립트처럼 즉석에서 수학 계산이나 논리 비교를 할 수 있어서 코드가 아주 간결해집니다!
